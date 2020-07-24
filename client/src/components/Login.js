@@ -6,8 +6,7 @@ class Login extends React.Component {
     credentials: {
       username: '',
       password: ''
-    },
-    isFetching: false
+    }
   }
 
   handleChange = e => {
@@ -21,9 +20,6 @@ class Login extends React.Component {
 
   login = e => {
     e.preventDefault()
-    this.setState({
-      isFetching: true
-    })
     axiosWithAuth()
       .post('/login', this.state.credentials)
       .then(res => {
