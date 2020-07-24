@@ -35,8 +35,27 @@ const ColorList = ({ colors, updateColors }) => {
       })
   };
 
+  const saveNew = e => {
+    e.preventDefault();
+    // Make a put request to save your updated color
+    // think about where will you get the id from...
+    // where is is saved right now?
+    axiosWithAuth()
+      .post('/colors', colorToEdit)
+      .then ((res) => {
+        updateColors(res.data)
+        axiosWithAuth().get(`/colors/`).then(res=>updateColors(res.data))
+      })
+  };
+
   const deleteColor = color => {
     // make a delete request to delete this color
+    axiosWithAuth()
+    .delete(`/colors/${color.id}`)
+    .then((res) => {
+      colors = colors.filter((color) => color.id !== res.data)
+      updateColors(colors)
+    })
   };
 
   return (
@@ -92,8 +111,36 @@ const ColorList = ({ colors, updateColors }) => {
           </div>
         </form>
       )}
-      <div className="spacer" />
       {/* stretch - build another form here to add a color */}
+      
+        <form onSubmit={saveNew}>
+          <legend>add a color</legend>
+          <label>
+            color name:
+            <input
+              onChange={e =>
+                setColorToEdit({ ...colorToEdit, color: e.target.value })
+              }
+              value={colorToEdit.color}
+            />
+          </label>
+          <label>
+            hex code:
+            <input
+              onChange={e =>
+                setColorToEdit({
+                  ...colorToEdit,
+                  code: { hex: e.target.value }
+                })
+              }
+              value={colorToEdit.code.hex}
+            />
+          </label>
+          <div className="button-row">
+            <button type="submit">save</button>
+            <button onClick={() => setEditing(false)}>cancel</button>
+          </div>
+        </form>
     </div>
   );
 };
