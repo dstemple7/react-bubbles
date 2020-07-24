@@ -9,11 +9,18 @@ const initialColor = {
 const ColorList = ({ colors, updateColors }) => {
   console.log(colors);
   const [editing, setEditing] = useState(false);
+  const [adding, setAdditional] = useState(false);
   const [colorToEdit, setColorToEdit] = useState(initialColor);
+  const [colorToAdd, setColorToAdd] = useState(initialColor);
 
   const editColor = color => {
     setEditing(true);
     setColorToEdit(color);
+  };
+
+  const addColor = color => {
+    setAdditional(true);
+    setColorToAdd('');
   };
 
   const saveEdit = e => {
@@ -44,7 +51,7 @@ const ColorList = ({ colors, updateColors }) => {
       .post('/colors', colorToEdit)
       .then ((res) => {
         updateColors(res.data)
-        axiosWithAuth().get(`/colors/`).then(res=>updateColors(res.data))
+        axiosWithAuth().get(`/colors`).then(res=>updateColors(res.data))
       })
   };
 
@@ -112,7 +119,8 @@ const ColorList = ({ colors, updateColors }) => {
         </form>
       )}
       {/* stretch - build another form here to add a color */}
-      
+      <ui onClick={() => addColor()}>color missing?</ui>
+      {adding &&
         <form onSubmit={saveNew}>
           <legend>add a color</legend>
           <label>
@@ -138,9 +146,10 @@ const ColorList = ({ colors, updateColors }) => {
           </label>
           <div className="button-row">
             <button type="submit">save</button>
-            <button onClick={() => setEditing(false)}>cancel</button>
+            <button onClick={() => setAdditional(false)}>cancel</button>
           </div>
         </form>
+      }
     </div>
   );
 };
